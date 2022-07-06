@@ -287,7 +287,7 @@ local diagonalMovements = {
 }
 
 -- (Internal) Requests adjacent map values around the given node.
-local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiagonals)
+function map:getAdjacent(width, height, node, positionIsOpenFunc, includeDiagonals)
 
     local result = {}
 
@@ -300,7 +300,7 @@ local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiago
     for _, point in ipairs(positions) do
         local px = clamp(node.x + point.x, 1, width)
         local py = clamp(node.y + point.y, 1, height)
-        local value = positionIsOpenFunc( px, py )
+        local value = self:is_walkable( px, py )
         if value then
             table_insert( result, { x = px, y = py  } )
         end
@@ -348,7 +348,7 @@ function map:find(width, height, start, goal, positionIsOpenFunc, useCache, excl
 
         if not success then
 
-            local adjacentList = getAdjacent(width, height, current, positionIsOpenFunc, not excludeDiagonalMoving)
+            local adjacentList = self:getAdjacent(width, height, current, positionIsOpenFunc, not excludeDiagonalMoving)
 
             for _, adjacent in ipairs(adjacentList) do
 
