@@ -105,17 +105,21 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
         local predefined_y_size = #optional_preset
         local predefined_x_size = #optional_preset[1]
 
-        assert(predefined_y_size == object.size_y, "PREDEFINED MAP Y (left/right) IS NOT THE SAME SIZE AS DEFINITION!\nRecieved " .. tostring(predefined_y_size) .. " height instead of defined " .. tostring(object.size_y))
-        assert(predefined_x_size == object.size_x, "PREDEFINED MAP X (up/down) IS NOT THE SAME SIZE AS DEFINITION!\nRecieved " .. tostring(predefined_x_size) .. " width instead of defined " .. tostring(object.size_x))
+        assert(predefined_y_size == object.__internal_size_y, "PREDEFINED MAP Y (left/right) IS NOT THE SAME SIZE AS DEFINITION!\nRecieved " .. tostring(predefined_y_size) .. " height instead of defined " .. tostring(object.size_y))
+        assert(predefined_x_size == object.__internal_size_x, "PREDEFINED MAP X (up/down) IS NOT THE SAME SIZE AS DEFINITION!\nRecieved " .. tostring(predefined_x_size) .. " width instead of defined " .. tostring(object.size_x))
 
         -- reconfigure them to intake literal spacial definition as it appears in code
         for y = 1,predefined_y_size do
             for x = 1,predefined_x_size do
-                object.pointer[object:convert_2d_to_1d(x - 1, y - 1)] = optional_preset[y][x]
+                local injecting_value = optional_preset[y][x]
+                assert(injecting_value ~= nil, "predefined map is probably uneven, error at X: " .. tostring(x) .. " | Y: " .. tostring(y))
+                object.pointer[object:convert_2d_to_1d(x - 1, y - 1)] = injecting_value
             end
         end
     elseif optional_default_value then
-
+        for i = 0,object.linear_size do
+            object.pointer[i] = optional_default_value
+        end
     end
 
     return object
@@ -170,5 +174,7 @@ function map:set_2d(x, y, new_value)
     self:overflow_protection(new_value)
     self.pointer[self:convert_2d_to_1d(x,y)] = new_value
 end
+
+
 
 
