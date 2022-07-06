@@ -287,7 +287,7 @@ local diagonalMovements = {
 }
 
 -- (Internal) Requests adjacent map values around the given node.
-function map:getAdjacent(width, height, node, positionIsOpenFunc, includeDiagonals)
+function map:getAdjacent(width, height, node, includeDiagonals)
 
     local result = {}
 
@@ -348,7 +348,7 @@ function map:find(width, height, start, goal, positionIsOpenFunc, useCache, excl
 
         if not success then
 
-            local adjacentList = self:getAdjacent(width, height, current, positionIsOpenFunc, not excludeDiagonalMoving)
+            local adjacentList = self:getAdjacent(width, height, current, not excludeDiagonalMoving)
 
             for _, adjacent in ipairs(adjacentList) do
 
