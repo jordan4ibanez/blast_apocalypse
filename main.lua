@@ -6,7 +6,13 @@ function love.keypressed(key)
     end
 end
 
-local debug_map = map:new(16, 20,20)
+local test_map = {
+    {0,1,1},
+    {0,1,0},
+    {1,0,0}
+}
+
+local debug_map = map:new(16, 4, 4, test_map)
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest", 16)
@@ -19,7 +25,10 @@ end
 function love.draw()
     for x = 0,debug_map.size_x do
         for y = 0,debug_map.size_y do
-            love.graphics.rectangle("fill",10,10, x * 30,y * 30)
+            local value = debug_map:get_2d(x,y)
+            if value > 0 then
+                love.graphics.rectangle("fill",x * 20,y * 20, 16,16)
+            end
         end
     end
 end
