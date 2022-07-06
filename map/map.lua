@@ -52,7 +52,7 @@ local function values_to_bytes(data_type, number_of_values)
     return(data_converted[data_type] * number_of_values)
 end
 
--- this is a test, move it into tests when it's in it's own rep
+-- this is a test, move it into tests when it's in it's own repo
 -- 10 values, 32 bit, 4 bytes in each memory cell
 assert(10 * 4 == values_to_bytes(32, 10), "EXTREME error in detect_architecture")
 
@@ -136,17 +136,8 @@ end
 -- allows users to define which nodes are walkable
 function map:add_walkables(walkables_table)
     for _,value in ipairs(walkables_table) do
-        local found = false
-        -- don't allow duplicates
-        for _,current_value in ipairs(self.walkable_ids) do
-            if value == current_value then
-                found = true
-            end
-        end
-
-        -- shove it in there
-        if not found then
-            table_insert(self.walkable_ids, value)
+        if not self.walkable_ids[value] then
+            self.walkable_ids[value] = true
         end
     end
 end
@@ -321,13 +312,7 @@ end
 
 -- a bolt on, internal handler to see if position is walkable
 function map:is_walkable(x,y)
-    local value = self.pointer[self:convert_2d_to_1d(x,y)]
-    for _,walkable in ipairs(self.walkable_ids) do
-        if value == walkable then
-            return true
-        end
-    end
-    return false
+    return self.walkable_ids[self.pointer[self:convert_2d_to_1d(x,y)]] ~= nil
 end
 
 -- Returns the path from start to goal, or false if no path exists.
