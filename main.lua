@@ -24,6 +24,8 @@ local test_map = {
 
 local debug_map = map:new(16, 10, 10, test_map)
 
+local pathy = debug_map:find_path({ x = 1,y=1}, {x=9,y=9} )
+
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest", 16)
 end
