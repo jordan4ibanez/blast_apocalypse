@@ -217,10 +217,9 @@ end
 -- This method doesn't bother getting the square root of s, it is faster
 -- and it still works for our use.
 local function distance(x1, y1, x2, y2)
-  local dx = x1 - x2
-  local dy = y1 - y2
-  local s = dx * dx + dy * dy
-  return s
+  local x = x1 - x2
+  local y = y1 - y2
+  return(x * x + y * y)
 end
 
 -- (Internal) Clamp a value to a range.
