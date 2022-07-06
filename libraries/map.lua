@@ -4,7 +4,6 @@ math_floor
 math.floor
 
 local ffi = require("ffi")
-dofile("libraries/a_star.lua")
 
 print("\n")
 
@@ -16,6 +15,14 @@ remember
 c arrays start at 0
 
 even though you can utilize 8 and 16 bits, they will be padded out to 32/64 in your ram
+
+maps utilize unsigned integers, no negativity, badum tss
+
+count base 0, a single shift is a row toggle right, an X overflow moves into next column
+
+0,0|1,0|2,0|3,0|etc
+0,1|1,1|2,1|3,1|etc
+etc
 
 ]]--
 
@@ -68,9 +75,10 @@ row 2
 [0][0][0][0][0][0][0][0]
 ]]
 
-
 -- map class
 map = {}
+
+-- creates individual signatures with identical maps
 local id = 0
 
 -- map constructor
@@ -83,6 +91,10 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
     object.size_x = size_x
 
     object.size_y = size_y
+
+    object.linear_size = size_x * size_y
+
+    object.bits = bits
 
     object.memory = love.data.newByteData(values_to_bytes(bits, size_x * size_y))
 
@@ -109,26 +121,60 @@ function map:convert_2d_to_1d(x,y)
     return math_floor((y * self.size_x) + x)
 end
 
+-- map integer overflow protection
+function map:overflow_protection(new_value)
+    assert(new_value > 0, "INTEGER UNDERFLOW DETECTED!")
+    if self.bits == 8 then
+        assert(new_value <= 255, "INTEGER OVERFLOW DETECTED!")
+    elseif self.bits == 16 then
+        assert(new_value <= 65535, "INTEGER OVERFLOW DETECTED!")
+    elseif self.bits == 32 then
+        assert(new_value <= 4294967295, "INTEGER OVERFLOW DETECTED!")
+    end
+end
+
+-- getter 1D
+function map:get_1d(i)
+    assert(i >= 0 and i < self.linear_size, "MAP 1D GETTER MUST BE BETWEEN 0 AND " .. tostring(self.linear_size) .. "!")
+    return self.pointer[i]
+end
+
+-- getter 2D
+function map:get_2d(x,y)
+    assert(x >= 0 and x < self.size_x, "trying to get map location out of bounds on X: " .. tostring(x))
+    assert(y >= 0 and y < self.size_y, "trying to get map location out of bounds on Y: " .. tostring(y))
+    return self.pointer[self:convert_2d_to_1d(x,y)]
+end
+
+-- setter 1D
+function map:set_1d(i, new_value)
+    assert(i >= 0 and i < self.linear_size, "MAP 1D GETTER MUST BE BETWEEN 0 AND " .. tostring(self.linear_size) .. "!")
+    self:overflow_protection(new_value)
+    self.pointer[i] = new_value
+end
+
+-- setter 2D
+function map:set_2d(x, y, new_value)
+    assert(x >= 0 and x < self.size_x, "trying to get map location out of bounds on X: " .. tostring(x))
+    assert(y >= 0 and y < self.size_y, "trying to get map location out of bounds on Y: " .. tostring(y))
+    self:overflow_protection(new_value)
+    self.pointer[self:convert_2d_to_1d(x,y)] = new_value
+end
+
 
 
 
 local test_map = map:new(8, 10, 10)
 
+test_map:set_1d(11, 254)
+
+local my_value = test_map:get_1d(11)
+
+local my_value2 = test_map:get_2d(1,1)
+
+print("my_value: " .. tostring(my_value))
+print("my_value2: " .. tostring(my_value2))
+
+
 print("map size: " .. tostring(test_map.memory:getSize()))
 
---[[
--- to find the exact bytes, multiply by 8
-print("memory size (bytes) = " .. tostring(memory:getSize()))
-
-pointer[0] = 1
-print(pointer[0])
-
--- this overflows and wraps around
-pointer[1] = 1234
-print(pointer[1])
-
--- allows you to create security issue, this must be fixed in full api
--- todo: FIX THIS
--- pointer[20000000] = 5
--- print(pointer[20000000])
-]]--
