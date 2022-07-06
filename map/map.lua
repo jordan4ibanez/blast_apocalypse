@@ -1,7 +1,7 @@
 local
-math_floor, math_abs
+math_floor, table_insert, table_sort, table_remove
 =
-math.floor, math.abs
+math.floor, table.insert, table.sort, table.remove
 
 local ffi = require("ffi")
 
@@ -175,13 +175,6 @@ function map:set_2d(x, y, new_value)
     self.pointer[self:convert_2d_to_1d(x,y)] = new_value
 end
 
-
-
-
-local
-table_insert, table_sort, table_remove
-=
-table.insert, table.sort, table.remove
 
 ------------------ begin path finding algorithm --------------------------------------------
 
