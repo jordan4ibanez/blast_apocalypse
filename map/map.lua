@@ -91,6 +91,8 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
 
     object.pointer = ffi.cast(data_to_string[bits], object.memory:getFFIPointer())
 
+    object.walkable_ids = {}
+
     object.id = id
 
     id = id + 1
@@ -129,6 +131,24 @@ end
 function map:close()
     self.memory:release()
     self = nil
+end
+
+-- allows users to define which nodes are walkable
+function map:add_walkables(walkables_table)
+    for _,value in ipairs(walkables_table) do
+        local found = false
+        -- don't allow duplicates
+        for _,current_value in ipairs(self.walkable_ids) do
+            if value == current_value then
+                found = true
+            end
+        end
+
+        -- shove it in there
+        if not found then
+            table_insert(self.walkable_ids, value)
+        end
+    end
 end
 
 -- map helper - base 0
