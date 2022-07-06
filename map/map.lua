@@ -125,6 +125,12 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
     return object
 end
 
+-- allows users to destroy the map
+function map:close()
+    self.memory:release()
+    self = nil
+end
+
 -- map helper - base 0
 -- 1d to 2d calcultion
 function map:convert_1d_to_2d(i)
@@ -260,7 +266,6 @@ local positions = {
     { x = 1, y = 0 },   -- right
 }
 
-
 local diagonalMovements = {
     { x = -1, y = -1 },   -- top left
     { x = 1, y = -1 },   -- top right
@@ -271,7 +276,7 @@ local diagonalMovements = {
 -- (Internal) Requests adjacent map values around the given node.
 local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiagonals)
 
-    local result = { }
+    local result = {}
 
     if includeDiagonals then
         for _, value in ipairs(diagonalMovements) do
