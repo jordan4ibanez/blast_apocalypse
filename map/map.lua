@@ -178,6 +178,10 @@ end
 
 
 
+local
+table_insert, table_sort, table_remove
+=
+table.insert, table.sort, table.remove
 
 ------------------ begin path finding algorithm --------------------------------------------
 
@@ -279,7 +283,7 @@ local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiago
         }
 
         for _, value in ipairs(diagonalMovements) do
-            table.insert(positions, value)
+            table_insert(positions, value)
         end
     end
 
@@ -288,7 +292,7 @@ local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiago
         local py = clamp(node.y + point.y, 1, height)
         local value = positionIsOpenFunc( px, py )
         if value then
-            table.insert( result, { x = px, y = py  } )
+            table_insert( result, { x = px, y = py  } )
         end
     end
 
@@ -314,16 +318,16 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache, e
     start.G = 0
     start.H = distance(start.x, start.y, goal.x, goal.y)
     start.parent = { x = 0, y = 0 }
-    table.insert(open, start)
+    table_insert(open, start)
 
     while not success and #open > 0 do
 
         -- sort by score: high to low
-        table.sort(open, function(a, b) return a.score > b.score end)
+        table_sort(open, function(a, b) return a.score > b.score end)
 
-        local current = table.remove(open)
+        local current = table_remove(open)
 
-        table.insert(closed, current)
+        table_insert(closed, current)
 
         success = listContains(closed, goal)
 
@@ -339,7 +343,7 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache, e
 
                         adjacent.score = calculateScore(current, adjacent, goal)
                         adjacent.parent = current
-                        table.insert(open, adjacent)
+                        table_insert(open, adjacent)
 
                     end
 
@@ -361,7 +365,7 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache, e
 
     while node do
 
-        table.insert(path, 1, { x = node.x, y = node.y } )
+        table_insert(path, 1, { x = node.x, y = node.y } )
         node = listItem(closed, node.parent)
 
     end
