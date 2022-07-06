@@ -206,6 +206,8 @@ end
 
 -- https://github.com/wesleywerner/lua-star/blob/master/src/lua-star.lua MIT
 
+-- I'm (jordan4ibanez) going to try to leave the comments alone, they explain it pretty well
+
 --- Provides easy A* path finding.
 -- @map lua-star
 
