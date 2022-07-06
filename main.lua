@@ -1,4 +1,4 @@
-dofile("libraries/a_star.lua")
+dofile("libraries/map.lua")
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest", 16)
