@@ -68,26 +68,6 @@ row 2
 [0][0][0][0][0][0][0][0]
 ]]
 
--- map helper - base 0
--- 1d to 2d calcultion
-local function convert_1d_to_2d(i, size_x, size_y)
-    return({math_floor(i % size_x), math_floor(i / size_x)})
-end
--- 2d to 1d calculation
-local function convert_2d_to_1d(x,y, size_x, size_y)
-    return math_floor((y * size_x) + x)
-end
-
-local position_i = 600
-local size_x = 20
-local size_y = 30
-
-local unpacky = convert_1d_to_2d(position_i, size_x, size_y)
-
-local test_i = convert_2d_to_1d(unpacky[1], unpacky[2], size_x, size_y)
-
-print(unpacky[1], unpacky[2], "literal: " .. test_i)
-
 
 -- map class
 map = {}
@@ -117,6 +97,16 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
     self.__index = self
 
     return object
+end
+
+-- map helper - base 0
+-- 1d to 2d calcultion
+function map:convert_1d_to_2d(i)
+    return({math_floor(i % self.size_x), math_floor(i / self.size_x)})
+end
+-- 2d to 1d calculation
+function map:convert_2d_to_1d(x,y)
+    return math_floor((y * self.size_x) + x)
 end
 
 
