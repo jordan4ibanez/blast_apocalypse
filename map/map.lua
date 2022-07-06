@@ -319,6 +319,17 @@ local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiago
 
 end
 
+-- a bolt on, internal handler to see if position is walkable
+function map:is_walkable(x,y)
+    local value = self.pointer[self:convert_2d_to_1d(x,y)]
+    for _,walkable in ipairs(self.walkable_ids) do
+        if value == walkable then
+            return true
+        end
+    end
+    return false
+end
+
 -- Returns the path from start to goal, or false if no path exists.
 function map:find(width, height, start, goal, positionIsOpenFunc, useCache, excludeDiagonalMoving)
 
