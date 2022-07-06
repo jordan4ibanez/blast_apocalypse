@@ -9,6 +9,7 @@ end
 
 -- map needs to warmup
 local warmup = 0.0
+local music
 
 -- 0 nothing
 -- 1 wall
@@ -33,6 +34,7 @@ local pathy
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest", 16)
+    music = love.audio.newSource("sounds/Lightless Dawn.ogg", "stream")
 end
 
 local function randomize_map()
@@ -50,8 +52,12 @@ function love.update(delta)
     if warmup < 1 then
         warmup = warmup + delta
     else
+        if not music:isPlaying() then
+            music:play()
+        end
         randomize_map()
         pathy = debug_map:find_path({ x = 1,y=1}, {x=28,y=28}, false, true)
+        warmup = 0
     end
 end
 
