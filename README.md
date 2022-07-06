@@ -1,2 +1,2 @@
-# blast_apocalypse
- a small rpg thing, nothing serious
+# city_thing
+ a small whatever this is thing, nothing serious
