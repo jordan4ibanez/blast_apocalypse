@@ -1,4 +1,4 @@
-require("map.map")
+require("libraries.map")
 require("libraries.dump")
 
 function love.keypressed(key)
@@ -10,6 +10,7 @@ end
 -- map needs to warmup
 local warmup = 0.0
 local music
+local scale = 5
 
 -- 0 nothing
 -- 1 wall
@@ -26,7 +27,7 @@ local test_map = {
     {1,1,1,1,1,1,1,1,1,1},
 }
 
-local debug_map = map:new(16, 30, 30)--, test_map)
+local debug_map = map:new(16, 256, 256)--, test_map)
 debug_map:add_walkables({0})
 
 
@@ -56,8 +57,8 @@ function love.update(delta)
             music:play()
         end
         randomize_map()
-        pathy = debug_map:find_path({ x = 1,y=1}, {x=28,y=28}, false, true)
-        warmup = 0
+        -- pathy = debug_map:find_path({ x = 1,y=1}, {x=28,y=28}, false, true)
+        -- warmup = 0
     end
 end
 
@@ -75,7 +76,7 @@ function love.draw()
                 elseif value == 3 then
                     love.graphics.setColor(0,0,1,1)
                 end
-                love.graphics.rectangle("fill", x * 20, y * 20, 16,16)
+                love.graphics.rectangle("fill", x * scale, y * scale, scale - 1,scale - 1)
             end
         end
     end
@@ -83,7 +84,7 @@ function love.draw()
     if pathy then
         love.graphics.setColor(1,0,0,1)
         for _,position in ipairs(pathy) do
-            love.graphics.rectangle("fill", position.x * 20, position.y * 20, 16,16)
+            love.graphics.rectangle("fill", position.x * scale, position.y * scale, scale - 1, scale - 1)
         end
     end
 
