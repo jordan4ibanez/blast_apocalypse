@@ -1,7 +1,7 @@
 local
-math_floor
+math_floor, math_abs
 =
-math.floor
+math.floor, math.abs
 
 local ffi = require("ffi")
 
@@ -76,9 +76,12 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
 
     local object = {}
 
-    object.size_x = size_x
+    -- this makes it easier to work with in lua
+    object.size_x = size_x - 1
+    object.size_y = size_y - 1
 
-    object.size_y = size_y
+    object.__internal_size_x = size_x
+    object.__internal_size_y = size_y
 
     object.linear_size = size_x * size_y
 
@@ -96,17 +99,36 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
 
     self.__index = self
 
+    -- set set defined map OR default value
+    if optional_preset then
+        -- take in first come first serve values
+        local predefined_y_size = #optional_preset
+        local predefined_x_size = #optional_preset[1]
+
+        assert(predefined_y_size == object.size_y, "PREDEFINED MAP Y (left/right) IS NOT THE SAME SIZE AS DEFINITION!\nRecieved " .. tostring(predefined_y_size) .. " height instead of defined " .. tostring(object.size_y))
+        assert(predefined_x_size == object.size_x, "PREDEFINED MAP X (up/down) IS NOT THE SAME SIZE AS DEFINITION!\nRecieved " .. tostring(predefined_x_size) .. " width instead of defined " .. tostring(object.size_x))
+
+        -- reconfigure them to intake literal spacial definition as it appears in code
+        for y = 1,predefined_y_size do
+            for x = 1,predefined_x_size do
+                object.pointer[object:convert_2d_to_1d(x - 1, y - 1)] = optional_preset[y][x]
+            end
+        end
+    elseif optional_default_value then
+
+    end
+
     return object
 end
 
 -- map helper - base 0
 -- 1d to 2d calcultion
 function map:convert_1d_to_2d(i)
-    return({math_floor(i % self.size_x), math_floor(i / self.size_x)})
+    return({math_floor(i % self.__internal_size_x), math_floor(i / self.__internal_size_x)})
 end
 -- 2d to 1d calculation
 function map:convert_2d_to_1d(x,y)
-    return math_floor((y * self.size_x) + x)
+    return math_floor((y * self.__internal_size_x) + x)
 end
 
 -- map integer overflow protection
@@ -129,8 +151,8 @@ end
 
 -- getter 2D
 function map:get_2d(x,y)
-    assert(x >= 0 and x < self.size_x, "trying to get map location out of bounds on X: " .. tostring(x))
-    assert(y >= 0 and y < self.size_y, "trying to get map location out of bounds on Y: " .. tostring(y))
+    assert(x >= 0 and x < self.__internal_size_x, "trying to get map location out of bounds on X: " .. tostring(x))
+    assert(y >= 0 and y < self.__internal_size_y, "trying to get map location out of bounds on Y: " .. tostring(y))
     return self.pointer[self:convert_2d_to_1d(x,y)]
 end
 
@@ -143,8 +165,8 @@ end
 
 -- setter 2D
 function map:set_2d(x, y, new_value)
-    assert(x >= 0 and x < self.size_x, "trying to get map location out of bounds on X: " .. tostring(x))
-    assert(y >= 0 and y < self.size_y, "trying to get map location out of bounds on Y: " .. tostring(y))
+    assert(x >= 0 and x < self.__internal_size_x, "trying to get map location out of bounds on X: " .. tostring(x))
+    assert(y >= 0 and y < self.__internal_size_y, "trying to get map location out of bounds on Y: " .. tostring(y))
     self:overflow_protection(new_value)
     self.pointer[self:convert_2d_to_1d(x,y)] = new_value
 end
