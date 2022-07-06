@@ -188,13 +188,11 @@ table.insert, table.sort, table.remove
 -- https://github.com/wesleywerner/lua-star/blob/master/src/lua-star.lua MIT
 
 --- Provides easy A* path finding.
--- @module lua-star
-
-local module = {}
+-- @map lua-star
 
 --- Clears all cached paths.
-function module:clearCached()
-    module.cache = nil
+function map:clearCached()
+    map.cache = nil
 end
 
 -- (Internal) Returns a unique key for the start and end points.
@@ -204,17 +202,17 @@ end
 
 -- (Internal) Returns the cached path for start and end points.
 local function getCached(start, goal)
-    if module.cache then
+    if map.cache then
         local key = keyOf(start, goal)
-        return module.cache[key]
+        return map.cache[key]
     end
 end
 
 -- (Internal) Saves a path to the cache.
 local function saveCached(start, goal, path)
-    module.cache = module.cache or { }
+    map.cache = map.cache or { }
     local key = keyOf(start, goal)
-    module.cache[key] = path
+    map.cache[key] = path
 end
 
 -- (Internal) Return the distance between two points.
@@ -302,7 +300,7 @@ local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiago
 end
 
 -- Returns the path from start to goal, or false if no path exists.
-function module:find(width, height, start, goal, positionIsOpenFunc, useCache, excludeDiagonalMoving)
+function map:find(width, height, start, goal, positionIsOpenFunc, useCache, excludeDiagonalMoving)
 
     if useCache then
         local cachedPath = getCached(start, goal)
@@ -377,5 +375,3 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache, e
     return path
 
 end
-
-return module
