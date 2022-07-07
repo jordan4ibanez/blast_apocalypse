@@ -226,8 +226,11 @@ local function calculateScore(previous, node, goal)
 
 end
 
+
+local runner_test = 0
 -- (Internal) Returns true if the given list contains the specified item.
 local function listContains(list, item)
+    runner_test = runner_test + 1
     for _, test in ipairs(list) do
         if test.x == item.x and test.y == item.y then
             return true
@@ -292,9 +295,13 @@ end
 -- Returns the path from start to goal, or false if no path exists.
 function map:find_path(start, goal, excludeDiagonalMoving)
 
+    local start_time = love.timer.getTime()
+
     local success = false
-    local open = { }
-    local closed = { }
+
+    -- these are the EXTREME problem tables
+    local open = {}
+    local closed = {}
 
     start.score = 0
     start.G = 0
@@ -302,6 +309,8 @@ function map:find_path(start, goal, excludeDiagonalMoving)
     start.parent = { x = 0, y = 0 }
 
     table_insert(open, start)
+
+    runner_test = 0
 
     while not success and #open > 0 do
 
@@ -335,6 +344,12 @@ function map:find_path(start, goal, excludeDiagonalMoving)
         end
 
     end
+
+    print("THIS RAN LISTCONTAINS " .. tostring(runner_test) .. " TIMES!")
+
+    local result = love.timer.getTime() - start_time
+
+    print( string.format( "It took %.3f milliseconds to calculate!", result * 1000 ))
 
     if not success then
         return false
