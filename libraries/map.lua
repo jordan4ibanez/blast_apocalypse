@@ -251,10 +251,10 @@ local function listItem(list, item)
 end
 
 local positions = {
-    { x = 0, y = -1 },  -- top
-    { x = -1, y = 0 },  -- left
-    { x = 0, y = 1 },   -- bottom
-    { x = 1, y = 0 },   -- right
+    0, -1, -- top
+    -1, 0, -- left
+    0,  1, -- bottom
+    1,  0  -- right
 }
 
 -- (Internal) Requests adjacent map values around the given node.
@@ -262,9 +262,12 @@ function map:getAdjacent(node)
 
     local result = {}
 
-    for _, point in ipairs(positions) do
-        local px = clamp(node.x + point.x, 1, self.size_x)
-        local py = clamp(node.y + point.y, 1, self.size_y)
+    for i = 1,4 do
+        local x = positions[(i * 2) - 1]
+        local y = positions[i * 2]
+
+        local px = clamp(node.x + x, 1, self.size_x)
+        local py = clamp(node.y + y, 1, self.size_y)
         local value = self:is_walkable( px, py )
         if value then
             table_insert( result, { x = px, y = py  } )
