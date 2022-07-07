@@ -337,7 +337,8 @@ function map:find_path(start, goal, excludeDiagonalMoving)
 
                 
         -- inserts the current value into the end of the closed queue
-        table_insert(closed, current)
+        -- previous function: table_insert(closed, current)
+        closed[#closed+1] = current
 
         -- inserts a hash key into the closed hash table
         closed_hash[current_hash] = true
@@ -369,7 +370,7 @@ function map:find_path(start, goal, excludeDiagonalMoving)
                         -- finally insert it into the open table
                         -- previous function: table_insert(open, adjacent)
                         open_hash[adjacent_hash] = true
-                        table_insert(open, adjacent)
+                        open[#open+1] = adjacent
 
                     end
 
