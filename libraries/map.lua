@@ -273,9 +273,7 @@ function map:getAdjacent(node)
         local px = new_node_x < 1 and 1 or (new_node_x > self.size_x and self.size_x or new_node_x)
         local py = new_node_y < 1 and 1 or (new_node_y > self.size_y and self.size_y or new_node_y)
 
-        local value = self:is_walkable( px, py )
-
-        if value then
+        if self:is_walkable( px, py ) then
             -- numerical insert
             result[insertions] = { x = px, y = py}
             insertions = insertions + 1
@@ -302,7 +300,7 @@ function map:find_path(start, goal, excludeDiagonalMoving)
     start.G = 0
     start.H = distance(start.x, start.y, goal.x, goal.y)
     start.parent = { x = 0, y = 0 }
-    
+
     table_insert(open, start)
 
     while not success and #open > 0 do
