@@ -66,13 +66,16 @@ function love.update(delta)
         local start_time = love.timer.getTime()
         pathy = debug_map:find_path({ x = 1,y=1}, {x=127,y=127}, true)
 
+        --[[
         local result = love.timer.getTime() - start_time
+
         if pathy then
             print( string.format( "It took %.3f milliseconds to calculate the path!", result * 1000 ))
         else
             print("PATH FIND FAILED!")
             print(string.format( "It took %.3f milliseconds to FAIL!", result * 1000 ))
         end
+        ]]--
         -- warmup = -50000000000
         -- love.event.quit()
     end
