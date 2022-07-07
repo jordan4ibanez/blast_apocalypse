@@ -316,9 +316,7 @@ function map:find_path(start, goal, excludeDiagonalMoving)
 
         if not success then
 
-            local adjacentList = self:getAdjacent(current, not excludeDiagonalMoving)
-
-            for _, adjacent in ipairs(adjacentList) do
+            for _, adjacent in ipairs(self:getAdjacent(current)) do
 
                 if not listContains(closed, adjacent) then
 
