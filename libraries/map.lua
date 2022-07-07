@@ -97,10 +97,6 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
 
     id = id + 1
 
-    setmetatable(object, self)
-
-    self.__index = self
-
     -- set set defined map OR default value
     if optional_preset then
         -- take in first come first serve values
@@ -122,7 +118,13 @@ function map:new(bits, size_x, size_y, optional_preset, optional_default_value)
         for i = 0,object.linear_size do
             object.pointer[i] = optional_default_value
         end
+    else
+        assert("nil" == 5, "AN OPTIONAL VALUE MUST BE PRESENT FOR A MAP!")
     end
+
+    setmetatable(object, self)
+
+    self.__index = self
 
     return object
 end
