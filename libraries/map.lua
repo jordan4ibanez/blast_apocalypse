@@ -260,7 +260,7 @@ function map:getAdjacent(node)
     local node_x = node.x
     local node_y = node.y
 
-    local insertions = 0
+    local insertions = 1
 
     for i = 1,4 do
         local x = positions[(i * 2) - 1]
@@ -276,12 +276,11 @@ function map:getAdjacent(node)
         local value = self:is_walkable( px, py )
 
         if value then
-            table_insert( result, { x = px, y = py  } )
+            -- numerical insert
+            result[insertions] = { x = px, y = py}
             insertions = insertions + 1
         end
     end
-
-    print("THIS CALCULATION COMMITTED: " .. tostring(insertions) .. " INSERTIONS!")
 
     return result
 
@@ -303,6 +302,7 @@ function map:find_path(start, goal, excludeDiagonalMoving)
     start.G = 0
     start.H = distance(start.x, start.y, goal.x, goal.y)
     start.parent = { x = 0, y = 0 }
+    
     table_insert(open, start)
 
     while not success and #open > 0 do
