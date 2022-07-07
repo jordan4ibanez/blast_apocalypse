@@ -214,11 +214,6 @@ local function distance(x1, y1, x2, y2)
   return(x * x + y * y)
 end
 
--- (Internal) Clamp a value to a range.
-local function clamp(x, min, max)
-  return x < min and min or (x > max and max or x)
-end
-
 -- (Internal) Return the score of a node.
 -- G is the cost from START to this node.
 -- H is a heuristic cost, in this case the distance from this node to the goal.
@@ -262,17 +257,31 @@ function map:getAdjacent(node)
 
     local result = {}
 
+    local node_x = node.x
+    local node_y = node.y
+
+    local insertions = 0
+
     for i = 1,4 do
         local x = positions[(i * 2) - 1]
         local y = positions[i * 2]
 
-        local px = clamp(node.x + x, 1, self.size_x)
-        local py = clamp(node.y + y, 1, self.size_y)
+        local new_node_x = node_x + x
+        local new_node_y = node_y + y
+
+        -- inlined clamp function
+        local px = new_node_x < 1 and 1 or (new_node_x > self.size_x and self.size_x or new_node_x)
+        local py = new_node_y < 1 and 1 or (new_node_y > self.size_y and self.size_y or new_node_y)
+
         local value = self:is_walkable( px, py )
+
         if value then
             table_insert( result, { x = px, y = py  } )
+            insertions = insertions + 1
         end
     end
+
+    print("THIS CALCULATION COMMITTED: " .. tostring(insertions) .. " INSERTIONS!")
 
     return result
 
