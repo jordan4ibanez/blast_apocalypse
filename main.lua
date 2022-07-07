@@ -64,7 +64,7 @@ function love.update(delta)
         print("STARTING PATH FIND")
 
         local start_time = love.timer.getTime()
-        pathy = debug_map:find_path({ x = 1,y=1}, {x=254,y=254}, false, true)
+        pathy = debug_map:find_path({ x = 1,y=1}, {x=254,y=254}, true)
 
         local result = love.timer.getTime() - start_time
         print( string.format( "It took %.3f milliseconds to calculate the path!", result * 1000 ))
