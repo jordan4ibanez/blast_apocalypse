@@ -204,30 +204,6 @@ end
 --- Provides easy A* path finding.
 -- @map lua-star
 
---- Clears all cached paths.
-function map:clearCached()
-    map.cache = nil
-end
-
--- (Internal) Returns a unique key for the start and end points.
-local function keyOf(start, goal)
-    return string.format("%d,%d>%d,%d", start.x, start.y, goal.x, goal.y)
-end
-
--- (Internal) Returns the cached path for start and end points.
-local function getCached(start, goal)
-    if map.cache then
-        local key = keyOf(start, goal)
-        return map.cache[key]
-    end
-end
-
--- (Internal) Saves a path to the cache.
-local function saveCached(start, goal, path)
-    map.cache = map.cache or { }
-    local key = keyOf(start, goal)
-    map.cache[key] = path
-end
 
 -- (Internal) Return the distance between two points.
 -- This method doesn't bother getting the square root of s, it is faster
@@ -318,14 +294,7 @@ function map:is_walkable(x,y)
 end
 
 -- Returns the path from start to goal, or false if no path exists.
-function map:find_path(start, goal, useCache, excludeDiagonalMoving)
-
-    if useCache then
-        local cachedPath = getCached(start, goal)
-        if cachedPath then
-            return cachedPath
-        end
-    end
+function map:find_path(start, goal, excludeDiagonalMoving)
 
     local success = false
     local open = { }
@@ -386,8 +355,6 @@ function map:find_path(start, goal, useCache, excludeDiagonalMoving)
         node = listItem(closed, node.parent)
 
     end
-
-    saveCached(start, goal, path)
 
     -- reverse the closed list to get the solution
     return path
