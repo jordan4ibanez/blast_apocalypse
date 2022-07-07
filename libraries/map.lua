@@ -257,23 +257,10 @@ local positions = {
     { x = 1, y = 0 },   -- right
 }
 
-local diagonalMovements = {
-    { x = -1, y = -1 },   -- top left
-    { x = 1, y = -1 },   -- top right
-    { x = -1, y = 1 },   -- bot left
-    { x = 1, y = 1 },   -- bot right
-}
-
 -- (Internal) Requests adjacent map values around the given node.
-function map:getAdjacent(node, includeDiagonals)
+function map:getAdjacent(node)
 
     local result = {}
-
-    if includeDiagonals then
-        for _, value in ipairs(diagonalMovements) do
-            table_insert(positions, value)
-        end
-    end
 
     for _, point in ipairs(positions) do
         local px = clamp(node.x + point.x, 1, self.size_x)
