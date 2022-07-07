@@ -54,16 +54,16 @@ function love.update(delta)
     if warmup < 1 then
         warmup = warmup + delta
     else
-        --[[
+        
         if not music:isPlaying() then
             music:play()
         end
-        ]]--
+        
 
         randomize_map()
-        print("STARTING PATH FIND")
+        -- print("STARTING PATH FIND")
 
-        local start_time = love.timer.getTime()
+        -- local start_time = love.timer.getTime()
         pathy = debug_map:find_path({ x = 1,y=1}, {x=127,y=127}, true)
 
         --[[
