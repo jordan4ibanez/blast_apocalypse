@@ -308,29 +308,41 @@ function map:find_path(start, goal, excludeDiagonalMoving)
     start.H = distance(start.x, start.y, goal.x, goal.y)
     start.parent = { x = 0, y = 0 }
 
+    -- inserts initial value
     table_insert(open, start)
 
-    runner_test = 0
-
+    -- continue until found or out of options
     while not success and #open > 0 do
 
         -- sort by score: high to low
-        table_sort(open, function(a, b) return a.score > b.score end)
+        table_sort(open,
+            function(a, b)
+                return a.score > b.score
+            end
+        )
 
+        -- pops beginning of queue from the open queue
         local current = table_remove(open)
-
+        
+        -- inserts the current value into the end of the closed queue
         table_insert(closed, current)
 
+        -- checks if the current goal has successfully inserted the finish node
         success = listContains(closed, goal)
 
+        -- only run if not found
         if not success then
 
+            -- check local neighbor nodes
             for _, adjacent in ipairs(self:getAdjacent(current)) do
 
+                -- check if neighbor is not in closed queue
                 if not listContains(closed, adjacent) then
 
+                    -- check if neighbor is not in open queue
                     if not listContains(open, adjacent) then
 
+                        -- add the neighbor to the open queue with score and parent node
                         adjacent.score = calculateScore(current, adjacent, goal)
                         adjacent.parent = current
                         table_insert(open, adjacent)
@@ -344,8 +356,6 @@ function map:find_path(start, goal, excludeDiagonalMoving)
         end
 
     end
-
-    print("THIS RAN LISTCONTAINS " .. tostring(runner_test) .. " TIMES!")
 
     local result = love.timer.getTime() - start_time
 
