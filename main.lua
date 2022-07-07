@@ -64,12 +64,17 @@ function love.update(delta)
         print("STARTING PATH FIND")
 
         local start_time = love.timer.getTime()
-        pathy = debug_map:find_path({ x = 1,y=1}, {x=254,y=254}, true)
+        pathy = debug_map:find_path({ x = 1,y=1}, {x=127,y=127}, true)
 
         local result = love.timer.getTime() - start_time
-        print( string.format( "It took %.3f milliseconds to calculate the path!", result * 1000 ))
-        warmup = -50000000000
-        love.event.quit()
+        if pathy then
+            print( string.format( "It took %.3f milliseconds to calculate the path!", result * 1000 ))
+        else
+            print("PATH FIND FAILED!")
+            print(string.format( "It took %.3f milliseconds to FAIL!", result * 1000 ))
+        end
+        -- warmup = -50000000000
+        -- love.event.quit()
     end
 end
 
@@ -83,7 +88,7 @@ function love.draw()
                 -- print(x,y)
             end
 
-            --[[
+            
             if value > 0 then
 
                 if value == 1 then
@@ -95,7 +100,7 @@ function love.draw()
                 end
                 love.graphics.rectangle("fill", x * scale, y * scale, scale - 1,scale - 1)
             end
-            ]]--
+            
         end
     end
 
