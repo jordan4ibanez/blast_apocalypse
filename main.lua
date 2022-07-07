@@ -27,7 +27,8 @@ local test_map = {
     {1,1,1,1,1,1,1,1,1,1},
 }
 
-local debug_map = map:new(16, 256, 256)--, test_map)
+local debug_map = map:new(16, 128, 128, nil, 0)--, test_map)
+
 debug_map:add_walkables({0})
 
 
@@ -53,20 +54,36 @@ function love.update(delta)
     if warmup < 1 then
         warmup = warmup + delta
     else
+        --[[
         if not music:isPlaying() then
             music:play()
         end
+        ]]--
+
         randomize_map()
-        -- pathy = debug_map:find_path({ x = 1,y=1}, {x=28,y=28}, false, true)
-        -- warmup = 0
+        print("STARTING PATH FIND")
+
+        local start_time = love.timer.getTime()
+        pathy = debug_map:find_path({ x = 1,y=1}, {x=254,y=254}, false, true)
+
+        local result = love.timer.getTime() - start_time
+        print( string.format( "It took %.3f milliseconds to calculate the path!", result * 1000 ))
+        warmup = -50000000000
+        love.event.quit()
     end
 end
 
 function love.draw()
     for x = 0,debug_map.size_x do
         for y = 0,debug_map.size_y do
+
             local value = debug_map:get_2d(x,y)
 
+            if value == nil then
+                -- print(x,y)
+            end
+
+            --[[
             if value > 0 then
 
                 if value == 1 then
@@ -78,6 +95,7 @@ function love.draw()
                 end
                 love.graphics.rectangle("fill", x * scale, y * scale, scale - 1,scale - 1)
             end
+            ]]--
         end
     end
 
