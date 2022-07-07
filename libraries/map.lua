@@ -303,10 +303,15 @@ function map:find_path(start, goal, excludeDiagonalMoving)
     local open = {}
     local closed = {}
 
+    local open_hash = {}
+    local closed_hash = {}
+
     start.score = 0
     start.G = 0
     start.H = distance(start.x, start.y, goal.x, goal.y)
     start.parent = { x = 0, y = 0 }
+
+    local goal_hash = goal.x .. " | " .. goal.y
 
     -- inserts initial value
     table_insert(open, start)
@@ -323,12 +328,23 @@ function map:find_path(start, goal, excludeDiagonalMoving)
 
         -- pops beginning of queue from the open queue
         local current = table_remove(open)
-        
+
+        -- create hash key for table
+        local current_hash = current.x .. " | " .. current.y
+
+        -- removes the open hash key
+        open_hash[current_hash] = nil
+
+                
         -- inserts the current value into the end of the closed queue
         table_insert(closed, current)
 
+        -- inserts a hash key into the closed hash table
+        closed_hash[current_hash] = true
+
         -- checks if the current goal has successfully inserted the finish node
-        success = listContains(closed, goal)
+        -- previous function: listContains(closed, goal)
+        success = closed_hash[goal_hash]
 
         -- only run if not found
         if not success then
@@ -336,15 +352,23 @@ function map:find_path(start, goal, excludeDiagonalMoving)
             -- check local neighbor nodes
             for _, adjacent in ipairs(self:getAdjacent(current)) do
 
+                -- create a hash key for the adjacent node
+                local adjacent_hash = adjacent.x .. " | " .. adjacent.y
+
                 -- check if neighbor is not in closed queue
-                if not listContains(closed, adjacent) then
+                if not closed_hash[adjacent_hash] then
 
                     -- check if neighbor is not in open queue
-                    if not listContains(open, adjacent) then
+                    -- previous function: listContains(open, adjacent)
+                    if not open_hash[adjacent_hash] then
 
                         -- add the neighbor to the open queue with score and parent node
                         adjacent.score = calculateScore(current, adjacent, goal)
                         adjacent.parent = current
+
+                        -- finally insert it into the open table
+                        -- previous function: table_insert(open, adjacent)
+                        open_hash[adjacent_hash] = true
                         table_insert(open, adjacent)
 
                     end
